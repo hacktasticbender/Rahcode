@@ -1,0 +1,86 @@
+package bpc;
+
+import java.util.Scanner;
+
+class Circle
+{
+	double radius;
+	char color;
+	Circle(double radius)
+	{
+	this.radius=radius;
+	this.color='g';
+	}
+	Circle(double radius,char color)
+	{
+	this.radius=radius;
+	this.color=color;
+	}
+	protected double getRadius()
+	{
+	return (this.radius);
+	}
+	protected char getColor()
+	{
+	return (this.color);
+	}
+	protected double getArea()
+	{
+                return Math.PI*radius*radius;
+    	 }
+}
+
+class Cylinder extends Circle
+{
+	double height;
+	
+	Cylinder(double height,double radius,char color)
+	{
+	super(radius,color);
+	this.height=height;
+	}
+	protected double getheight()
+	{
+	return (this.height);
+	}
+	double getVolume()
+	{
+	return (this.height*super.getArea());
+		
+	}
+	@Override
+	protected double getArea()
+	{
+	return( 2*super.getArea()+2*Math.PI*this.radius*this.height);
+	}
+
+	void checkSimilar(Cylinder cylinder)
+	{
+       	 if(this.getArea() == cylinder.getArea() && this.getVolume() == cylinder.getVolume() && this.color==cylinder.color)
+            System.out.println("\nThe two cylinders are similar\n");
+        else
+            System.out.println("\nThe two cylinders are not similar\n");
+    }
+	
+}
+
+public class ShapeVolume {
+
+	public static void main(String[] args) 
+	{
+           Cylinder c1,c2;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nEnter the height,radiusand color of first cylinder");
+        double height1=scanner.nextDouble();
+        double radius1=scanner.nextDouble();
+        char color1=scanner.next().charAt(0); 
+        c1 = new Cylinder(height1,radius1,color1);
+        System.out.println("\nEnter the height,radiusand color of second cylinder");
+        double height2=scanner.nextDouble();
+        double radius2=scanner.nextDouble();
+        char color2=scanner.next().charAt(0); 
+        c2 = new Cylinder(height2,radius2,color2);
+        c1.checkSimilar(c2);
+    }
+
+}
