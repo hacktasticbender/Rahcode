@@ -1,12 +1,106 @@
+STRUCTURE
+#include <stdio.h>
+#include <conio.h>
+/* Structure Declaration*/
+struct distance
+{
+int kms;
+int meters;
+};
+typedef struct distance DISTANCE;
+/*Function prototypes*/
+DISTANCE add_distance (DISTANCE *, DISTANCE *);
+DISTANCE subtract_distance (DISTANCE *, DISTANCE *);
+/*Structure variable declaration*/
+DISTANCE d1, d2, d3, d4;
+int main()
+{
+int option;
+clrscr();
+do
+{
+printf("\n ******** MAIN MENU *********");
+printf("\n 1. Read the distances ");
+printf("\n 2. Display the distances");
+printf("\n 3. Add the distances");
+printf("\n 4. Subtract the distances");
+printf("\n 5. EXIT");
+printf("\n Enter your option : ");
+scanf("%d", &option);
+switch(option)
+{
+case 1:
+printf("\n Enter the first distance  in kms and meters: ");
+scanf("%d %d", &d1.kms, &d1.meters);
+printf("\n Enter the second distance  in kms and meters: ");
+scanf("%d %d", &d2.kms, &d2.meters);
+break;
+case 2:
+printf("\n The first distance is : %d kms %d meters",d1.kms,
+ d1.meters);
+printf("\n The second distance is : %d kms %d
+ meters",d2.kms, d2.meters);
+break;
+case 3:
+d3 = add_distance(&d1, &d2);
+printf("\n The sum of two distances is : %d kms %d meters",
+ d3.kms, d3.meters);
+break;
+case 4:
+d4 = subtract_distance(&d1, &d2);
+printf("\n The difference between two distances is : %d kms
+ %d meters", d4.kms, d4.meters);
+break;
+}
+}while(option != 5);
+getch();
+return 0;
+}
+/*function to add two distance*/
+DISTANCE add_distance(DISTANCE *d1, DISTANCE *d2)
+{
+DISTANCE sum;
+sum.meters = d1->meters + d2->meters;
+sum.kms = d1->kms + d2->kms;
+while (sum.meters >= 1000)
+{
+sum.meters = sum.meters % 1000;
+sum.kms += 1;
+}
+return sum;
+}
+/*function to subtract two distance*/
+DISTANCE subtract_distance(DISTANCE *d1, DISTANCE *d2)
+{
+ DISTANCE sub;
+ if(d1->kms > d2->kms)
+ {
+ sub.meters = d1->meters - d2->meters;
+ sub.kms = d1->kms - d2->kms;
+ }
+ else
+ {
+ sub.meters = d2->meters - d1->meters;
+ sub.kms = d2->kms - d1->kms;
+ }
+ if(sub.meters < 0)
+{
+sub.meters = sub.meters + 1000;
+sub.kms -= 1;
+}
+return sub;
+}
+
+
+
+SLL
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
 #include<conio.h>
-#define QS 5
 /*Structure declaration for a node*/
 struct node
 {
-char info[10];
+int info;
 struct node *link;
 };
 typedef struct node *NODE;
@@ -22,76 +116,64 @@ exit(0);
 }
 return x;
 }
-/*function to insert a node at the rear end of SLL as a queue*/
-NODE insert_rear(char item[10],NODE first,int *r)
+/*function to insert a node at the rear end in SLL*/
+NODE insert_rear(int item,NODE first)
 {
 NODE temp,cur;
-if(*r==QS-1)
-{
- printf("\n Queue is Full! insertion not possible\n");
- return first;
-}
 temp=getnode();
-Implement a menu driven Program for the following operations on QUEUES of Strings
-using Linked list
-(i) Insert an Element into Queue
-(ii) Delete an Element from Queue
-(iii) Display the contents of Queue
-strcpy(temp->info,item);
+temp->info=item;
 temp->link=NULL;
-if(*r==-1)
+if(first==NULL)
+return temp;
+cur=first;
+while(cur->link!=NULL)
 {
- *r=*r+1;
- printf("r=%d",*r);
- first=temp;
-return first;
+cur=cur->link;
 }
-else
- {
- *r=*r+1;
- cur=first;
- while(cur->link!=NULL)
- {
- cur=cur->link;
- }
- }
 cur->link=temp;
 return first;
 }
-/*function to delete a node from the front end of SLL as a queue*/
-NODE delete_front(NODE first, int *f, int *r)
+/*function to delete a node whose is specified in SLL */
+NODE delete_item(NODE first, int item)
 {
- NODE temp;
- if(*f>*r)
- {
- printf("\n Queue is Empty! deletion not possible\n");
- *f=0;
- *r=-1;
- return first;
- }
- temp=first;
- first=first->link;
- printf("The node with info [ %s ] is deleted from the front end",temp->info);
- (*f)++;
- free(temp);
-
- return first;
+NODE prev, cur;
+if(first==NULL)
+{
+printf("\n List is Empty");
+return first;
 }
-/*function to display contents of the SLL as a queue*/
-void display(NODE first, int f, int r)
+/*Search for the item specified in each node*/
+prev=NULL;
+cur=first;
+while(cur!=NULL && item!=cur->info)
+{
+prev=cur;
+cur=cur->link;
+}
+if(cur==NULL)
+{
+printf("\n The item to be deleted is not found in the list");
+return first;
+}
+/*delete the node*/
+prev->link=cur->link;
+free(cur);
+return first;
+}
+/*function to display contents of the SLL*/
+void display(NODE first)
 {
 NODE temp;
-int i;
-if(f>r)
+if(first==NULL)
 {
 printf("\nList is empty");
 return;
 }
 printf("\nThe contents of the list:");
 temp=first;
-for(i=f;i<=r;i++)
+while(temp!=NULL)
 {
-printf("%s\n",temp->info);
+printf("%d\t",temp->info);
 temp=temp->link;
 }
 printf("\n");
@@ -99,28 +181,29 @@ printf("\n");
 int main()
 {
 NODE first=NULL;
-int choice,f=0,r=-1;
-char item[10];
+int choice,item,n,i;
 //clrscr();
 do
 {
-printf("\n************************");
-printf("\n 1: Queue_Insert\n 2: Queue_delete\n 3: Queue_Display\n 4:Exit\n");
-printf("\n************************");
+printf("\n 1: Create List\n 2: Delete specified item\n 3: Display\n 4: Exit\n");
 printf("\nEnter the choice:");
 scanf("%d",&choice);
 switch(choice)
 {
-case 1:
-printf("\nEnter the item to be inserted into the List(string data):");
- scanf("%s",item);
- first=insert_rear(item,first,&r);
-break;
-case 2:
-first=delete_front(first,&f,&r);
+case 1: printf("\nEnter the no. of nodes to create List:");
+ scanf("%d",&n);
+ for(i=1;i<=n;i++)
+ {
+ printf("\nEnter the item %d to be inserted:",i);
+ scanf("%d",&item);
+ first=insert_rear(item,first);
+ }
  break;
-case 3:
-display(first,f,r);
+case 2: printf("\nEnter the item to be deleted:");
+scanf("%d",&item);
+ first=delete_item(first,item);
+ break;
+case 3: display(first);
  break;
 }
 }while(choice!=4);
@@ -129,258 +212,223 @@ return 0;
 }
 
 
-
-
-
-
-
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-/*Stucture declaration*/
+DLL
+#include <stdio.h>
+#include <stdlib.h>
+/*Structure Declaration*/
 struct node
 {
-int data;
-int priority;
-struct node *link;
+ int BOOK_ID;
+ char BOOK_TITLE[20];
+ char AUTHOR[30];
+ char EDITION[3];
+ struct node *llink;
+ struct node *rlink;
 };
 typedef struct node *NODE;
 /*function to allocate memory for a node*/
 NODE getnode(void)
 {
-NODE x;
-x=(NODE)malloc(sizeof(struct node));
-if(x==NULL)
-{
-printf("\nOut of memory");
-exit(0);
-}
-return x;
-}
-/*function to insert a node based on priority*/
-NODE insert_priority(NODE first)
-{
- int val, pri;
- NODE temp,cur,prev;
- printf("\n Enter the value:");
- scanf("%d", &val);
- printf("\n Enter the priority:");
- scanf("%d", &pri);
- temp=getnode();
- temp->data=val;
-Implement a menu driven program to perform the following operations on priority
-queue using linked list.
-(i) Insert a node based on priority.
-(ii) Delete a node from the queue
-(iii) Display the contents of the queue
- temp->priority= pri;
- temp->link=NULL;
- if(first==NULL || pri < first->priority )
-{
- temp->link = first;
- first = temp;
- return first;
-}
-prev=NULL;
-cur = first;
-//next= cur->link;
-while(cur!=NULL && cur->priority<=pri)
-{
- prev=cur;
- cur = cur->link;
-}
-if(cur==NULL)
-{
- prev->link=temp;
- return first;
-}
-temp->link = cur;
-prev->link = temp;
-return first;
-}
-/*function to delete a node from the front end of the priority queue*/
-NODE delete(NODE first)
-{
- NODE temp;
- if(first == NULL)
-{
- printf("\n QUEUE UNDERFLOW" );
- return NULL;
-}
-temp = first;
-printf("\n Deleted item is: %d", temp->data);
-first = first->link;
-free(temp);
- return first;
-}
-/*function to display the contents of priority queue*/
-void display(NODE first)
-{
- NODE temp;
- temp = first;
- if(first == NULL)
-{
- printf("\nQUEUE IS EMPTY" );
- return;
-}
-printf("\n THE CONTENTS OF PRIORITY QUEUE IS : " );
-while(temp != NULL)
-{
-printf( "\n%d [priority=%d]", temp->data, temp->priority );
-temp=temp->link;
-}
-}
-void main()
-{
- NODE first=NULL;
- int option;
- //clrscr();
- do
- {
- printf("\n *****MAIN MENU*****");
- printf("\n 1. INSERT");
- printf("\n 2. DELETE");
- printf("\n 3. DISPLAY");
- printf("\n 4. EXIT");
- printf("\n Enter your option : ");
- scanf( "%d", &option);
- switch(option)
- {
- case 1:
- first=insert(first);
- break;
- case 2:
- first = delete(first);
- break;
- case 3:
- display(first);
- break;
- }
- }while(option!=4);
-}
-
-
-
-
-
-#include<stdio.h>
-#include<conio.h>
-#include<stdlib.h>
-int flag;
-/*structure declaration for a node*/
-struct node
-{
- int info;
- struct node *llink,*rlink;
-};
-typedef struct node *NODE;
-/*function to allocate memory for a node*/
-NODE getnode()
-{
  NODE x;
  x=(NODE)malloc(sizeof(struct node));
  if(x==NULL)
  {
- printf("out of memory\n");
+ printf("Out of memory..\n");
  exit(0);
  }
-return x;
+ return x;
 }
-/*function to insert a node into BST*/
-NODE insert(NODE root,int item)
+/*function to insert a node into DLL at the rear-end*/
+NODE insert_rear(NODE first)
 {
- NODE temp,cur,prev;
+ NODE temp,cur;
  temp=getnode();
- temp->info=item;
- temp->llink=temp->rlink=NULL;
- if(root==NULL)
- return temp;
- prev =NULL;
- cur=root;
- while(cur!=NULL)
+ //temp->rlink=temp->llink=NULL;
+ printf("\nEnter the BOOK_ID:");
+ scanf("%d",&temp->BOOK_ID);
+ printf("\nEnter the BOOK_TITLE:");
+ scanf("%s",temp->BOOK_TITLE);
+ printf("\nEnter the AUTHOR:");
+Implement a menu driven Program for the following operations on Doubly Linked List
+(DLL) of Library Data with the fields: BOOK_ID, BOOK_TITLE, AUTHOR,
+EDITION
+(i) Create a DLL of ‘N’ books (Insert front/rear).
+(ii) Count the number of nodes in the DLL.
+(iii) Delete the node at front/rear.
+(iv) Display the contents of DLL.
+ scanf("%s",temp->AUTHOR);
+ printf("\nEnter the EDITION:");
+ scanf("%s",temp->EDITION);
+ temp->rlink=temp->llink=NULL;
+
+ if(first==NULL)
  {
-Implement a menu driven Program for the following operations on Binary Search Tree
-(BST) of Integers
-(i) Create a BST of N Integers
-(ii) Traverse the BST in Inorder, Preorder and Postorder
- prev=cur;
- if(item==cur->info)
- {
- printf("duplicate items are not allowed\n");
- free(temp);
- return root;
+ first=temp;
+ return first;
  }
- if(item<cur->info)
- cur=cur->llink;
- else
+
+ cur=first;
+ while(cur->rlink!=NULL)
+ {
  cur=cur->rlink;
  }
- if(item<prev->info)
- prev->llink=temp;
- else
- prev->rlink=temp;
- return root;
+
+ cur->rlink=temp;
+ temp->llink=cur;
+
+ return first;
 }
-/*function for inorder traversal*/
-void in_order(NODE root)
+/*function to insert a node into DLL at the front-end*/
+NODE insert_front(NODE first)
 {
- if(root!=NULL)
+ NODE temp,cur;
+ temp=getnode();
+ //temp->rlink=temp->llink=NULL;
+ printf("\nEnter the BOOK_ID:");
+ scanf("%d",&temp->BOOK_ID);
+ printf("\nEnter the BOOK_TITLE:");
+ scanf("%s",temp->BOOK_TITLE);
+ printf("\nEnter the AUTHOR:");
+ scanf("%s",temp->AUTHOR);
+ printf("\nEnter the EDITION:");
+ scanf("%s",temp->EDITION);
+ temp->rlink=temp->llink=NULL;
+
+ if(first==NULL)
  {
- in_order(root->llink);
- printf("%d\t",root->info);
- in_order(root->rlink);
+ first=temp;
+ return first;
  }
+
+ temp->rlink=first;
+ first->llink=temp;
+
+ return temp;
 }
-/*function for preorder traversal*/
-void pre_order(NODE root)
+
+/*function to count the number of nodes in a DLL*/
+NODE count_nodes(NODE first)
 {
- if(root!=NULL)
+ int count=0;
+ NODE cur;
+ if(first==NULL)
  {
- printf("%d\t",root->info);
- pre_order(root->llink);
- pre_order(root->rlink);
+ printf("\nList is Empty\n");
+ return NULL;
  }
-}
-/*function for postorder traversal*/
-void post_order(NODE root)
-{
- if(root!=NULL)
+
+ cur=first;
+ while(cur!=NULL)
  {
- post_order(root->llink);
- post_order(root->rlink);
- printf("%d\t",root->info);
+ count++;
+ cur=cur->rlink;
+ }
+
+ printf("\nThe no. of nodes in the list = %d\n",count);
+ return first;
+}
+/*function to delete a node from the rear-end in a DLL*/
+NODE del_rear(NODE first)
+{
+ NODE cur,prev;
+
+ if(first==NULL)
+ {
+ printf("\nList is Empty\n");
+ return NULL;
+ }
+
+ prev=NULL;
+ cur=first;
+ while(cur->rlink!=NULL)
+ {
+ prev=cur;
+ cur=cur->rlink;
+ }
+ printf("\n The node with the following information is Deleted:");
+ printf("\nBOOK_ID:%d",cur->BOOK_ID);
+ printf("\nBOOK_TITLE:%s",cur->BOOK_TITLE);
+ printf("\nAUTHOR:%s",cur->AUTHOR);
+ printf("\nEDITION:%s",cur->EDITION);
+ free(cur);
+
+ prev->rlink=NULL;
+
+ return first;
+}
+/*function to delete a node from the front-end in a DLL*/
+NODE del_front(NODE first)
+{
+ NODE cur;
+
+ if(first==NULL)
+ {
+ printf("\nList is Empty\n");
+ return NULL;
+ }
+
+ cur=first;
+ first=first->rlink;
+ printf("\n The node with the following information is Deleted:");
+ printf("\nBOOK_ID:%d",cur->BOOK_ID);
+ printf("\nBOOK_TITLE:%s",cur->BOOK_TITLE);
+ printf("\nAUTHOR:%s",cur->AUTHOR);
+ printf("\nEDITION:%s",cur->EDITION);
+ free(cur);
+
+ first->llink=NULL;
+
+ return first;
+}
+/*function to display the node information in a DLL*/
+void display(NODE first)
+{
+ NODE temp;
+ if(first==NULL)
+ {
+ printf("\nDList is Empty...\n");
+ return;
+
+ }
+ printf("\nThe contents of the DList are:\n");
+ for(temp=first;temp!=NULL;temp=temp->rlink)
+ {
+ printf("BOOK_ID=%d\n",temp->BOOK_ID);
+ printf("BOOK_TITLE=%s\n",temp->BOOK_TITLE);
+ printf("AUTHOR=%s\n",temp->AUTHOR);
+ printf("EDITION=%s\n",temp->EDITION);
+ printf("\n");
  }
 }
 void main()
 {
- NODE root=NULL;
- int ch,item;
+ NODE first=NULL;
+ int choice;
  //clrscr();
+
  for(;;)
  {
- printf("\n1.BST Insertion\n 2.preorder\n 3.inorder\n 4.postorder\n 5.exit\n");
- printf("\nEnter your choice:");
- scanf("%d",&ch);
- switch(ch)
+ printf("\n*********OPERATIONS ON DLL*****************\n");
+ printf("1:Insert-rear\n2:Insert-front\n3.Count the nodes in the List\n");
+ printf("4:Delete-rear\n5:Delete-front\n6:Display\n7:Exit\n");
+ printf("********************************************\n");
+ printf("Enter your choice:");
+ scanf("%d",&choice);
+ switch(choice)
  {
- case 1:
- printf("\nEnter the item to be inserted:");
- scanf("%d",&item);
- root=insert(root,item);
+ case 1: first=insert_rear(first);
  break;
- case 2:
- printf("pre traversal is\n");
- pre_order(root);
+ case 2: first=insert_front(first);
  break;
- case 3:
- printf("in traversal is\n");
- in_order(root);
+ case 3: first=count_nodes(first);
  break;
- case 4:
- printf("post traversal is\n" );
- post_order(root);
+ case 4: first=del_rear(first);
  break;
- default:
+ case 5: first=del_front(first);
+ break;
+ case 6: display(first);
+ break;
+ default:printf("Invalid choice...\n");
  exit(0);
  }
  }
@@ -388,7 +436,7 @@ void main()
 
 
 
-
+CLL
 #include <stdio.h>
 #include<stdlib.h>
 #include<string.h>
