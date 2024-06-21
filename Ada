@@ -1,0 +1,161 @@
+#include<stdio.h>
+
+#include<conio.h>
+
+int a[20][20],q[20],visited[20],n, i, j,f=0,r=-1;
+
+void bfs(int v)
+
+{
+
+for(i=1;i<=n;i++)
+
+if(a[v][i] && !visited[i])
+
+q[++r]=i;
+
+if(f<=r)
+
+{
+
+visited[q[f]]=1;
+
+bfs(q[f++]);
+
+}
+
+}
+
+void main()
+
+{
+
+int v; clrscr();
+
+printf("\n Enter the number of vertices:");scanf("%d",&n);
+
+for(i=1;i<=n;i++)
+
+{
+
+q[i]=0;
+
+visited[i]=0;
+
+}
+
+printf("\n Enter graph data in matrix form:\n");
+
+for(i=1;i<=n;i++)
+
+for(j=1;j<=n;j++)
+
+scanf("%d",&a[i][j]);
+
+printf("\n Enter the starting vertex:");scanf("%d",&v);
+
+bfs(v);
+
+printf("\n The node which are reachable are:\n");
+
+for(i=1;i<=n;i++)
+
+if(visited[i])
+
+printf("%d\t",i); getch()
+
+
+2
+#include<stdio.h>
+
+int res[20]; //store the dead vertex or which is completely explored
+
+int s[20]; //to know what nodes are visited and what nodes are not visited
+
+int j=0; //index variable for array res[]
+
+void dfs(int u,int n,int cost[10][10])
+
+{
+
+int v;
+
+//visit the vertex u
+
+s[u]=1;
+
+//traverse deeper into the graph till we get the dead end or till all the vertices are visited
+
+for(v=0;v<n;v++)
+
+{
+
+if(cost[u][v]==1 && s[v]==0)
+
+{
+
+dfs(v,n,cost);
+
+}
+
+}
+
+//store the dead vertex or which is completely explored
+
+res[j++]=u;
+
+}
+
+void depth_first_traversal(int n,int a[10][10])
+
+{
+
+int i;
+
+//initialisation to indicate that no vertex has been visited
+
+for(i=0;i<n;i++)
+
+s[i]=0;
+
+//process each vertex in the graph
+
+for(i=0;i<n;i++)
+
+{
+
+if(s[i]==0)
+
+dfs(i,n,a);
+
+}
+
+}
+
+void main()
+
+{
+
+int i,j,k,m,n,cost[10][10];
+
+printf("\nEnter the number of nodes");
+
+scanf("%d",&n);
+
+printf("\nEnter the adjacency matrix:");
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+
+scanf("%d",&cost[i][j]);
+
+depth_first_traversal(n,cost);
+
+printf("\nThe topological sequence is:\n");
+
+for(i=n-1;i>=0;i--)
+
+printf("%d ",res[i]);
+
+}
+
+Output:
