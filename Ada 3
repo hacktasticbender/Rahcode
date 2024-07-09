@@ -120,3 +120,70 @@ unioun_ij(i,j,parent);
 cost[u][v]=cost[v][u]=999; 
 
 }
+if(count==n-1) 
+
+{ 
+
+printf("\nSpanning Tree Exists"); 
+
+printf("\nThe cost of MST = %d",sum);
+
+printf("\nSpanning tree is shown below:"); 
+
+for(k=0;k<n-1;k++) 
+
+printf("\n%d-->%d",t[k][0],t[k][1]); 
+
+return; 
+
+} 
+
+else 
+
+printf("\nSpanning tree do not exist"); 
+
+} 
+
+void main()
+
+{ 
+
+int i, j; 
+
+clrscr(); 
+
+printf("\n\n\tImplementation of Kruskal's algorithm\n\n"); 
+
+printf("\nEnter the no. of vertices\n"); 
+
+scanf("%d",&n); 
+
+printf("\nEnter the cost adjacency matrix\n"); 
+
+for(i=1;i<=n;i++) 
+
+{ 
+
+for(j=1;j<=n;j++) 
+
+{ 
+
+scanf("%d",&cost[i][j]); 
+
+if(cost[i][j]==0) 
+
+cost[i][j]=999;
+
+} 
+
+} 
+
+kruskals_mst(); 
+
+}
+
+Input Graph
+
+
+10
+
