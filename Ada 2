@@ -136,3 +136,56 @@ printf("%d\t",a[i]);
 }
 
 Output:
+
+
+
+7
+#include<stdio.h>
+
+int max(int a,int b)
+
+{
+
+return a>b?a:b;
+
+}
+
+void knapsack(int n,int w[],int m,int v[][10],int p[])
+
+{
+
+int i,j;
+
+for(i=0;i<=n;i++)
+
+{
+
+for(j=0;j<=m;j++)
+
+{
+
+if(i==0||j==0)
+
+v[i][j]=0;
+
+else if(j<w[i])
+
+v[i][j]=v[i-1][j];
+
+else
+
+v[i][j]=max(v[i-1][j],v[i-1][j-w[i]]+p[i]);
+
+}
+
+}
+
+}
+
+void print_optimal_sol(int n,int m,int w[],int v[10][10])
+
+{
+
+int i,j,x[10];
+
+printf("\nThe optimal solution is %d:\n",v[n][m]);
