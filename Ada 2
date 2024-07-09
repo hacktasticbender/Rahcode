@@ -189,3 +189,86 @@ void print_optimal_sol(int n,int m,int w[],int v[10][10])
 int i,j,x[10];
 
 printf("\nThe optimal solution is %d:\n",v[n][m]);
+/*Initially no object is selected*/
+
+for(i=0;i<n;i++)
+
+x[i]=0;
+
+i=n; /*number of objects*/
+
+j=m;/*capacity of knapsack*/
+
+while(i!=0 && j!=0)
+
+{
+
+if(v[i][j]!=v[i-1][j])
+
+{
+
+x[i]=1;
+
+j=j-w[i];
+
+}
+
+i=i-1;
+
+}
+
+/*output the objects selected*/
+
+for(i=1;i<=n;i++)
+
+{
+
+printf("x[%d]",i);
+
+}
+
+printf("=");
+
+for(i=1;i<=n;i++)
+
+{
+
+printf("%d ",x[i]);
+
+}
+
+}
+
+void main()
+
+{
+
+int m,n,i,j;
+
+int p[10];
+
+int w[10],v[10][10];
+
+clrscr();
+
+printf("\n Enter the number of objects\n");
+
+scanf("%d",&n);
+
+printf("\nEnter the weights of n objects:");
+
+for(i=1;i<=n;i++)
+
+scanf("%d",&w[i]);
+
+printf("Enter the profits of n objects\n");
+
+for(i=1;i<=n;i++)
+
+scanf("%d",&p[i]);
+
+printf("\nEnter the capacity of knapsack\n");
+
+scanf("%d",&m);
+
+knapsack(n,w,m,v,p);
