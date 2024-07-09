@@ -406,4 +406,55 @@ for(destination=0;destination<n; destination++)
  {
 
  printf("%d <-- ",i);
+i=p[i];
+
+ }
+
+printf("%d=%d\n",i, d[destination]);
+
+ }
+
+ }
+
+}
+
+void main()
+
+{
+
+int i,j,source;
+
+//clrscr();
+
+printf("\n Enter the number of nodes:");
+
+scanf("%d",&n);
+
+printf("\n Enter the cost adjacency matrix:\n");
+
+for(i=1;i<=n;i++)
+
+ {
+
+ for(j=1;j<=n;j++)
+
+ {
+
+ scanf("%d",&cost[i][j]);
+
+ }
+
+ }
+
+printf("\n Enter the source Vertex:");
+
+scanf("%d",&source);
+
+print_path(source);
+
+getch();
+
+}
+
+
 
