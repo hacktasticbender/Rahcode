@@ -186,4 +186,21 @@ Input Graph
 
 
 10
+#include<stdio.h>
+
+int count=0;
+
+int w[10];
+
+int d;
+
+int x[10];
+
+void subset(int cs,int k,int r)
+
+{
+
+ int i;
+
+ x[k]=1;
 
