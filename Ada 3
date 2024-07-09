@@ -1,0 +1,41 @@
+#include<stdio.h> 
+
+#include<conio.h> 
+
+#include<stdlib.h>
+
+int cost[10][10],n; 
+
+int find(int node, int parent[10]) 
+
+{ 
+
+while(parent[node]!=node) 
+
+node=parent[node]; 
+
+return node; 
+
+}
+
+int union_ij(int i,int j,int parent[10]) 
+
+{ 
+
+if(i<j) 
+
+parent[j]=i; 
+
+else 
+
+parent[i]=j; 
+
+}
+
+void kruskal_mst()
+
+{
+
+int count, i, parent[10], min, u, v, k, t[10][2], sum;
+
+count=0,sum=0,k=0
