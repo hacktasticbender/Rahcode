@@ -298,4 +298,33 @@ Output:
 
 
 8
+#include<stdio.h>
+
+#include<conio.h>
+
+int cost[10][10],d[10], p[10], n;
+
+void dij(int source,int dest)
+
+{
+
+int i,j,u,v,min,S[10];
+
+for(i=0;i<n;i++)
+
+ {
+
+ d[i]=cost[source][i];
+
+ S[i]=0;
+
+ p[i]=source;
+
+ }
+
+S[source]=1;
+
+for(i=1;i<n;i++)
+
+ {
 
