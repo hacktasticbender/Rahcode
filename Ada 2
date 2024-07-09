@@ -272,3 +272,30 @@ printf("\nEnter the capacity of knapsack\n");
 scanf("%d",&m);
 
 knapsack(n,w,m,v,p);
+printf("The output is\n");
+
+for(i=0;i<=n;i++)
+
+{
+
+for(j=0;j<=m;j++)
+
+{
+
+printf("%d ",v[i][j]);
+
+}
+
+printf("\n");
+
+}
+
+print_optimal_sol(n,m,w,v);
+
+}
+
+Output:
+
+
+8
+
