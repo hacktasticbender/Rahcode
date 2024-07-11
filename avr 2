@@ -1,0 +1,54 @@
+#define led_pin 8
+void setup() {  
+pinMode(led_pin, OUTPUT); 
+} 
+ 
+void loop() { 
+  digitalWrite(led_pin, HIGH); //turn the led ON 
+delay(1000); // wait a second 
+digitalWrite(led_pin, LOW); //turn the led OFF 
+delay(1000); // wait a second 
+} 
+
+10
+#define ledPin 13 // choose the pin for the LED  
+#define switchPin 7 // choose the input pin (for a pushbutton) 
+  
+int val = 0; // variable for reading the pin status 
+void setup() 
+{ 
+  pinMode(ledPin, OUTPUT); // declare LED as output 
+  pinMode(switchPin, INPUT); // declare pushbutton as input 
+} 
+void loop() 
+{ 
+  val = digitalRead(switchPin); // read input value 
+  if (val == HIGH) 
+  { // check if the input is HIGH (button released) 
+    digitalWrite(ledPin, LOW); // turn LED OFF 
+  } else { 
+    digitalWrite(ledPin, HIGH); // turn LED ON } } 
+  } 
+}
+
+12
+#include <LiquidCrystal.h> 
+// initialize the library by associating any needed LCD interface pin 
+// with the arduino pin number it is connected to 
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2; 
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7); 
+void setup() { 
+// set up the LCD's number of columns and rows: 
+lcd.begin(16, 2); 
+// Print a message to the LCD. 
+lcd.print("hello, world!"); 
+} 
+Page 13 
+AVR Microcontroller Integrated lab (P21CS405) 
+void loop() { 
+// set the cursor to column 0, line 1 
+// (note: line 1 is the second row, since counting begins with 0): 
+lcd.setCursor(0, 1); 
+// print the number of seconds since reset: 
+lcd.print(millis() / 1000); 
+}
