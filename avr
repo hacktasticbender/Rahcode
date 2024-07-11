@@ -1,0 +1,124 @@
+.equ packedbcd=0x300 
+ .equ ascii1=0x301 
+ .equ ascii2=0x302 
+ 
+;initialize stack 
+ ldi r16,high(ramend) 
+ out sph,r16 
+ ldi r16,low(ramend) 
+ out spl,r16 
+;store packed BCD at location 0x300 
+ ldi r20,0x38 
+ sts packedbcd,r20 
+ call conversion ;call subroutine 
+ here:jmp here      
+ 
+;subroutine 
+ Conversion: 
+              lds r20,packedbcd ;load packedBCD into R20 
+  mov r21,r20 
+  ldi r22,0x30 
+andi r20,0x0f  ;unpack BCD and obtain lowerbyte number 
+  add r20,r22  ;convert unpacked BCD into ASCII 
+  sts ascii1,r20  ;store first ASCII value into memory locatio 0x301 
+  swap r21   
+  andi r21,0x0f  ;unpack BCD and obtain higher byte number 
+  add r21,r22  ;convert unpacked BCD into ASCII 
+  sts ascii2,r21  ;store first ASCII value into memory locatio 0x302 
+  ret   ;return to main program
+
+
+2
+.include "m32def.inc" 
+.org 0 
+; store 10 bytes of data starting from location 0x300 to 0x309 
+Ldi r16,10 
+Sts 0X0300,r16 
+Ldi r16,20 
+Sts 0X0301,r16 
+Ldi r16,30 
+Sts 0X0302,r16 
+Ldi r16,40 
+Sts 0X0303,r16 
+Ldi r16,50 
+Sts 0X0304,r16 
+Ldi r16,60 
+Sts 0X0305,r16 
+Ldi r16,70 
+Sts 0X0306,r16 
+Ldi r16,80 
+Sts 0X0307,r16 
+Ldi r16,90 
+Sts 0X0308,r16 
+Ldi r16,100 
+Sts 0X0309,r16 
+Ldi r21,0 
+Ldi r22,0 
+;read each byte from location 0x300 to 0x309 and add each value to R21 
+Lds r20,0X0300 
+Add r21,r20 
+Lds r20,0x0301 
+Add r21,r20 
+Lds r20,0x0302 
+Add r21,r20 
+Lds r20,0x0303 
+Add r21,r20 
+Lds r20,0x304 
+Add r21,r20 
+Lds r20,0x0305 
+Add r21,r20 
+Lds r20,0x0306 
+Page 8 
+AVR Microcontroller Integrated lab (P21CS405) 
+Add r21,r20 
+Lds r20,0x0307 
+Add r21,r20 
+Lds r20,0x0308 
+Add r21,r20 
+Lds r20,0x0309 
+Add r21,r20 
+;read the content of status register 
+in r19,sreg 
+lsr r19  
+;obtain the content of carry bit 
+brcc Here 
+ldi r22,1  
+Here:rjmp Here 
+;store the carry bit value into R22
+
+3
+.org 0 
+ldi r16,10 
+;counter(n) 
+ldi xl, 0X00 ;lower byte of address 
+ldi xh, 0X06 ;higher byte of address 
+ldi r20,0 
+;odd number counter 
+ldi r21,0 
+;even number counter 
+;store n=6 bytes of data from memory location 0x600 to 0x605 
+ldi r17,2 
+st x+,r17 
+ldi r17,3 
+st x+,r17 
+ldi r17,4 
+st x+,r17 
+ldi r17,7 
+st x+,r17 
+ldi r17,10 
+st x+,r17 
+ldi r17,12 
+st x+,r17 
+;initialize the register x with address 0x600 
+ldi xl, 0X00 ;lower byte of address 
+ldi xh, 0X06 ;higher byte of address 
+;obtain each byte from memory location 0x600 to 0x605 
+l1: ld r18,x+ 
+ror r18  
+brcs l2   
+inc r21  
+rjmp next 
+l2: inc r20  
+next: dec r16 
+brne l1 
+here: rjmp here 
