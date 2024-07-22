@@ -1,0 +1,48 @@
+3a. Retrieve the name and address of all employees who work for the ‘Research’ department.
+
+select Fname, Minit, Lname, Address 
+    from EMPLOYEE e, DEPARTMENT d where
+    e.Dno=d.Dnumber
+    and
+    d.Dname="Research";
+
+3b. For every project located in ‘Stafford’, list the project number, the controlling department number, and the department manager’s last name, address, and birth date.
+
+select e.Lname, e.Bdate, e.Address, p.pnumber, p.dnum
+    from EMPLOYEE e, PROJECT p, DEPARTMENT d 
+    where p.plocation="Stafford" and p.dnum=d.Dnumber
+    and d.Mgr_ssn=e.Ssn;
+
+
+3c. For each employee, retrieve the employee’s first and last name and the first and last name  
+     of   his or her immediate supervisor.
+    select e1.Fname, e1.Lname, e2.Fname as manager_Fname, e2.Lname as     
+    manager_Lname
+    from EMPLOYEE as e1, EMPLOYEE as e2 
+    where e2.Ssn=e1.Super_ssn;
+
+3d. Make a list of all project numbers for projects that involve an employee whose last name is   
+     ‘Smith’, either as a worker or as a manager of the department that controls the project.
+
+(select distinct pnumber
+From PROJECT,DEPARTMENT,EMPLOYEE
+where Dnum=Dnumber AND Mgr_ssn=Ssn AND Lname="Smith")
+UNION
+(Select distinct pnumber
+From PROJECT,WORKS_ON,EMPLOYEE
+where pnumber=Pno AND Essn=Ssn AND Lname="Smith");
+
+3e. Retrieve all employees whose address is in Houston, Texas.
+
+         select Fname, Minit, Lname 
+    from EMPLOYEE 
+    where Address like "%Houston%TX%";   
+
+
+3f. Retrieve all employees in department 5 whose salary is between $30,000 and $40,000.
+
+    select *
+    from EMPLOYEE e, DEPARTMENT d 
+    where e.Dno=d.Dnumber and d.Dnumber=5
+    and e.Salary between 30000 and 40000;
+
