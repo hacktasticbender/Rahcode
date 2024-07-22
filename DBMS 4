@@ -1,0 +1,49 @@
+4a. Retrieve the names of all employees who do not have supervisors.
+
+         select Fname, Minit, Lname 
+    from EMPLOYEE e 
+    where 
+    not exists(select * from EMPLOYEE as s where e.Super_ssn=s.Ssn);
+
+
+4b. Retrieve the name of each employee who has a dependent with the same first name and is 
+     the same gender as the employee
+    select Fname, Minit, Lname 
+    from EMPLOYEE e, DEPENDENT d where
+    e.Fname=d.Dependent_name
+    and 
+    e.Sex=d.Sex;
+4c. Retrieve the names of employees who have no dependents.
+
+         select Fname, Minit, Lname 
+    from EMPLOYEE where 
+    not exists(select * from DEPENDENT where Ssn=Essn);
+
+4d. List the names of managers who have at least one dependent.
+
+         select Fname, Minit, Lname 
+    from EMPLOYEE where 
+    exists(select * from DEPARTMENT where Ssn=Mgr_ssn and Dno=Dnumber)
+    and
+    exists(select * from DEPENDENT where Ssn=Essn);
+
+4e. Retrieve the Social Security numbers of all employees who work on project numbers 1, 2,  
+     or 3.
+
+         select distinct Essn from WORKS_ON where Pno in (1,2,3);
+
+4f. Find the sum of the salaries of all employees of the ‘Research’ department, as well as the 
+     maximum salary, the minimum salary, and the average salary in this department.
+    select sum(Salary), max(Salary), min(Salary), avg(salary)
+    from EMPLOYEE, DEPARTMENT 
+    where Dno=Dnumber and Dname="Research";
+
+4g. For each department, retrieve the department number, the number of employees in the 
+     department, and their average salary.
+
+         select Dno, count(*), avg(Salary)
+    from EMPLOYEE 
+    group by Dno;
+
+
+
