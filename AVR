@@ -1,0 +1,123 @@
+ .org 0 
+ .equ largest=0x0060 
+ ; load r16,r17 and r18 with three numbers 
+         ldi r16,-27 
+         ldi r17,27 
+         ldi r18,-10 
+ ;logic to find larsest number and r16 contains the largest number 
+         cp r16,r17 
+         brge l1 
+         mov r16,r17 
+   l1:   cp r16,r18 
+         brge l2 
+         mov r16,r18 
+  ; store the largest number in memory location 
+   l2:   sts largest,r16 
+ here:   jmp here
+
+2
+.org 0 
+.equ 
+.def 
+.def 
+.def 
+result =0X0300 
+dividend =r17  
+divisor =r18  
+counter =r19  
+ldi dividend,10 
+ldi divisor,2 
+ldi counter,0 
+clc  
+l1:inc counter 
+sub dividend,divisor 
+brcc l1 
+dec counter 
+; store the result in memory location 
+sts result,counter 
+Here: rjmp Here
+
+3
+.org 0 
+ldi r16,128 
+mov r17,16 
+subi r17,1  
+andi r17,r16 
+here:rjmp here
+
+4
+.org 0 
+;stack initialization 
+ldi r18,high(ramend) 
+out sph,r18 
+ldi r18,low(ramend) 
+out spl,r18 
+ldi r19,0x05 
+ldi r18,0x01 
+call fact 
+;call subroutine 
+;make PORTA as output port to send result 
+ldi r16,0xff 
+out ddra,r16 
+out porta,r18  
+here: rjmp here 
+;subroutine       
+fact:    
+nop 
+loop:    mul r18,r19 
+mov r18,r0 
+dec r19 
+brne loop 
+ret 
+;return to main code
+
+5
+.org 0 
+;configure  PORTA,PORTB,PORTC and PORTD  as output port  
+ldi r16,0xff 
+out ddra,r16 
+out ddrb,r16 
+out ddrc,r16 
+out ddrd,r16 
+;load the forst number to PORTA and second number to PORTB 
+ldi r16,0x45 
+out porta,r16 
+ldi r17,0x20 
+out portb,r17 
+;configure  PORTA and PORTB as input port 
+ldi r20,0x00 
+out ddra,r20 
+out ddrb,r20 
+;read the two numbers  from PINA and PINB  
+in r24,pina 
+in r25,pinb 
+;multiply two numbers 
+mul r24,r25 
+;send result to PORT C and PORTD 
+out portc,r0 
+out portd,r1 
+here:rjmp here
+
+6
+.org 0 
+;configure  PORTA,PORTB  and  PORTC  as output port  
+ldi r16,0XFF 
+out ddra,r16 
+out ddrb,r16 
+out ddrc,r16 
+;load some value into PORTC 
+ldi r17,0X20 
+out portc,r17 
+;configure pin 1 of PORTC as Input pin 
+cbi ddrc,1 
+;skip next instruction if PIN 1 of PORTC is set 
+sbis pinc,1 
+rjmp over 
+;send ‘Y’ to PORTA 
+ldi r16,'Y' 
+out porta,r16 
+rjmp here 
+;send ‘N’ to PORTB 
+over: ldi r16,'N' 
+out portb,r16 
+here:  rjmp here
