@@ -1,0 +1,191 @@
+#include<stdio.h> 
+#include<conio.h> 
+#include<math.h> 
+int main() 
+{ 
+int queue[100],t[100],head,seek=0,n,i,j,temp; 
+float avg; 
+// clrscr(); 
+printf("*** SSTF Disk Scheduling Algorithm ***\n"); 
+printf("Enter the size of Queue\t"); 
+scanf("%d",&n); 
+printf("Enter the Queue\t"); 
+for(i=0;i<n;i++) 
+{ 
+scanf("%d",&queue[i]); 
+V Semester 
+Page 32 
+Operating System (Intergrated)Lab Manual- P21CS504 
+} 
+printf("Enter the initial head position\t"); 
+scanf("%d",&head); 
+for(i=1;i<n;i++) 
+t[i]=abs(head-queue[i]); 
+for(i=0;i<n;i++) 
+{ 
+for(j=i+1;j<n;j++) 
+{ 
+if(t[i]>t[j]) 
+{ 
+temp=t[i]; 
+t[i]=t[j]; 
+t[j]=temp; 
+temp=queue[i]; 
+queue[i]=queue[j]; 
+queue[j]=temp; 
+} 
+} 
+} 
+for(i=1;i<n-1;i++) 
+{ 
+seek=seek+abs(head-queue[i]); 
+head=queue[i]; 
+} 
+printf("\nTotal Seek Time is%d\t",seek); 
+avg=seek/(float)n; 
+printf("\nAverage Seek Time is %f\t",avg); 
+return 0; 
+}
+SCAN DISK SCHEDULING ALGORITHM  
+#include<stdio.h>  
+main()  
+{ 
+int t[20], d[20], h, i, j, n, temp, k, atr[20], tot, p, sum=0;  
+clrscr(); 
+printf("enter the no of tracks to be traveresed");  
+scanf("%d'",&n); 
+printf("enter the position of head"); 
+scanf("%d",&h);  
+t[0]=0;t[1]=h;  
+printf("enter the tracks");  
+for(i=2;i<n+2;i++)  
+scanf("%d",&t[i]); 
+for(i=0;i<n+2;i++) 
+{  
+for(j=0;j<(n+2)-i-1;j++)  
+{ 
+if(t[j]>t[j+1]) 
+{  
+temp=t[j];  
+t[j]=t[j+1];  
+t[j+1]=temp; 
+} 
+} 
+V Semester 
+Page 34 
+Operating System (Intergrated)Lab Manual- P21CS504 
+}  
+for(i=0;i<n+2;i++) 
+if(t[i]==h) 
+j=i; 
+k=i; 
+p=0;  
+while(t[j]!=0)  
+{  
+atr[p]=t[j]; 
+j--;  
+p++;  
+}  
+atr[p]=t[j]; 
+for(p=k+1;p<n+2;p++,k++)  
+atr[p]=t[k+1]; 
+for(j=0;j<n+1;j++) 
+{  
+if(atr[j]>atr[j+1])  
+d[j]=atr[j]-atr[j+1]; 
+else  
+d[j]=atr[j+1]-atr[j];  
+sum+=d[j]; 
+}  
+printf("\nAverage header movements:%f",(float)sum/n);  
+getch(); 
+}  
+
+
+
+11
+#include<stdio.h> 
+#include<conio.h> 
+struct fileTable 
+{  
+char name[20];  
+int sb, nob; 
+}ft[30];  
+V Semester 
+Page 37 
+Operating System (Intergrated)Lab Manual- P21CS504 
+void main()  
+{  
+int i, j, n;  
+char s[20];  
+clrscr();  
+printf("Enter no of files :");  
+scanf("%d",&n);  
+for(i=0;i<n;i++) 
+{  
+printf("\nEnter file name %d :",i+1);  
+scanf("%s",ft[i].name);  
+printf("Enter starting block of file %d :",i+1);  
+scanf("%d",&ft[i].sb);  
+printf("Enter no of blocks in file %d :",i+1);  
+scanf("%d",&ft[i].nob);  
+}  
+printf("\nEnter the file name to be searched -- ");  
+scanf("%s",s);  
+for(i=0;i<n;i++)  
+if(strcmp(s, ft[i].name)==0) 
+break;  
+if(i==n)  
+printf("\nFile Not Found");  
+else  
+{  
+printf("\nFILE NAME START BLOCK NO OF BLOCKS BLOCKS OCCUPIED\n");  
+printf("\n%s\t\t%d\t\t%d\t",ft[i].name,ft[i].sb,ft[i].nob);  
+for(j=0;j<ft[i].nob;j++) 
+printf("%d, ",ft[i].sb+j); 
+}  
+getch(); 
+}
+#include<stdio.h>  
+#include<conio.h>  
+struct fileTable  
+{  
+char name[20]; 
+int nob, blocks[30]; 
+}ft[30];  
+void main()  
+{  
+int i, j, n;  
+char s[20]; 
+clrscr();  
+printf("Enter no of files :"); 
+scanf("%d",&n); 
+for(i=0;i<n;i++) 
+{  
+printf("\nEnter file name %d :",i+1);  
+scanf("%s",ft[i].name); 
+printf("Enter no of blocks in file %d :",i+1);  
+scanf("%d",&ft[i].nob);  
+printf("Enter the blocks of the file :");  
+for(j=0;j<ft[i].nob;j++)  
+scanf("%d",&ft[i].blocks[j]); 
+}  
+printf("\nEnter the file name to be searched -- ");  
+scanf("%s",s);  
+for(i=0;i<n;i++)  
+if(strcmp(s, ft[i].name)==0)  
+break;  
+if(i==n)  
+printf("\nFile Not Found");  
+else  
+{  
+V Semester 
+Page 40 
+Operating System (Intergrated)Lab Manual- P21CS504 
+printf("\nFILE NAME NO OF BLOCKS BLOCKS OCCUPIED");  
+printf("\n %s\t\t%d\t",ft[i].name,ft[i].nob);  
+for(j=0;j<ft[i].nob;j++) 
+printf("%d, ",ft[i].blocks[j]);  
+}  
+getch(); 
+}
