@@ -1,0 +1,61 @@
+10
+#create dataset
+ df <- data.frame(hours=c(1, 2, 4, 5, 5, 6, 6, 7, 8, 10, 11, 11, 12, 12, 14),
+ score=c(64, 66, 76, 73, 74, 81, 83, 82, 80, 88, 84, 82, 91, 93, 89))
+ #view first six rows
+ head(df)
+ #attach dataset to make it
+ easier to work withattach(df)
+ #create a scatterplot to check for linear
+ relationship scatter.smooth(hours, score,
+ main='Hours studied vs. Exam Score')
+ #create a boxplot to
+ check for outliers
+ boxplot(score)
+ #fit simple linear
+ regression modelmodel
+ <- lm(score~hours)
+#view model
+ summary
+ summary(mod
+ el)
+ #define residuals
+ of modelres <
+resid(model)
+ #produce residual vs.
+ fitted plot
+ plot(fitted(model),
+ res)
+ #add a horizontal
+ line at 0
+ abline(0,0)
+ #create Q-Q plot
+ for residuals
+ qqnorm(res)
+ #add a straight diagonal
+ line to the plotqqline(res
+
+
+9
+require("class")
+require("datasets")
+data("iris")
+str(iris)
+summary(iris)
+head(iris)
+set.seed(99)
+snum <- sample(rep(1:150))
+snum
+iris <- iris[snum,]
+head(iris)
+normalize <- function(x) { return((x - min(x))/(max(x) - min(x))) }
+iris.new <- as.data.frame(lapply(iris[,c(1,2,3,4)], normalize))
+head(iris.new)
+iris.train <- iris.new[1:130,]
+iris.train.target <- iris[1:130,5]
+iris.test <- iris.new[131:150,]
+iris.test.target <- iris[131:150,5]
+summary(iris.new)
+model1 <- knn(train = iris.train, test = iris.test, cl = iris.train.target, k = 16)
+model1
+table(iris.test.target, model1)
