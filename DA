@@ -1,0 +1,117 @@
+ rm(list = ls(all.names = TRUE)) # Remove all objects in the present in the workspace
+ input = read.csv("filter.csv")
+               # Read the CSV file from working directory
+ print(input)
+ x = cor(input[,c(2:7)])
+ print(x)
+ pairs(input[,c(2:7)]) )
+ y = x[6,1:5]                     
+print(y)
+          # Find correlation of all rows with 2nd to 7th column (attributes)
+            #print the scatter plot matrix for correlation matrix
+    #Extract the last row of correlation matrix excluding company
+ x= sort(y,decreasing = TRUE)
+ print(x)
+ cnt =1
+ print("selected attributes")
+ while(cnt<=length(y))     
+       # 
+Loop to display all attributes having correlation with target
+ #   attribute greater than threshold (0.5)
+ {  if (y[cnt]>.5)
+ print(y[cnt])
+ cnt=cnt+1
+ }
+
+
+
+7
+ # Loading data
+ data(iris)
+ # Structure
+ str(iris)
+ Performing K-Means Clustering on Dataset
+ Using K-Means Clustering algorithm on the dataset which includes 11 persons and 6
+ variables or attributes
+ # Installing Packages
+install.packages("ClusterR")
+ install.packages("cluster")
+ # Loading package
+ library(ClusterR)
+ library(cluster)
+ # Removing initial label of
+ # Species from original dataset
+ iris_1 <- iris[,-5]
+ # Fitting K-Means clustering Model
+ # to training dataset
+ set.seed(240) # Setting seed
+ kmeans.re <- kmeans(iris_1, centers = 3, nstart = 20)
+ kmeans.re
+ # Cluster identification for
+ # each observation
+ kmeans.re$cluster
+ # Confusion Matrix
+ cm <- table(iris$Species, kmeans.re$cluster)
+ cm
+# Model Evaluation and visualization
+ plot(iris_1[c("Sepal.Length", "Sepal.Width")])
+ plot(iris_1[c("Sepal.Length", "Sepal.Width")],
+ col = kmeans.re$cluster)
+ plot(iris_1[c("Sepal.Length", "Sepal.Width")],
+ col = kmeans.re$cluster,
+ main = "K-means with 3 clusters")
+ ## Plotiing cluster centers
+ kmeans.re$centers
+ kmeans.re$centers[, c("Sepal.Length", "Sepal.Width")]
+ # cex is font size, pch is symbol
+ points(kmeans.re$centers[, c("Sepal.Length", "Sepal.Width")],
+ col = 1:3, pch = 8, cex = 3)
+ ## Visualizing clusters
+ y_kmeans <- kmeans.re$cluster
+ clusplot(iris_1[, c("Sepal.Length", "Sepal.Width")],
+ y_kmeans,
+ lines = 0,
+ shade = TRUE,
+ color = TRUE,
+labels = 2,
+ plotchar = FALSE,
+ span = TRUE,
+ main = paste("Cluster iris"),
+ xlab = 'Sepal.Length',
+ ylab = 'Sepal.Width')
+
+
+8
+# to add the package arules to the R sciptt
+ library(arules)
+ # read the CSV file from the destination
+ SupMarTra<- read.csv("D:/New folder/supermarket3.csv", header = T, colClasses =
+ "factor")
+ # to get more information about the dataset
+ summary(SupMarTra)
+ #to find the length of the dataset
+ length(SupMarTra)
+ #to find the dimensions
+ dim(SupMarTra)
+ #view the file
+View(SupMarTra)
+ #to find the association rules with Aprior
+ rules<- apriori(SupMarTra)
+ #set support and confidence (support = 3  and confidence = 70%)
+ rules<-apriori(SupMarTra, parameter=list( supp = .5, conf = .8))
+ inspect(rules)
+ # set the maximum and minimum length of rules , the null sel will  be removed
+ rules<- apriori(SupMarTra, parameter=list(minlen = 2, maxlen = 5, supp=.5, conf=.8))
+ inspect(rules)
+ #remove all = NO because it won't give any sense
+ rules<- apriori(SupMarTra, parameter=list(minlen = 2, maxlen = 5, supp=.5, conf=.8),
+ appearance  = list(none=c("I1=NO","I2=NO","I3=NO","I4=NO","I5=NO")))
+ inspect(rules)
+ #writing rules to CSV files
+ write(rules, file = "D:/data3.CSV", sep = ",")
+ #plotting the graph
+ library(arulesViz)
+ plot(rules)
+ plot(rules, method = "grouped")
+plot(rules, method = "graph", control = list(type="items"))
+
