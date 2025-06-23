@@ -1,0 +1,259 @@
+10 
+#include <stdio.h> 
+#include <omp.h> 
+#define N 100000000 
+#define TRUE 1 
+#define FALSE 0 
+int main(int argc, char **argv ) 
+{ 
+char host[80]; 
+int *a; 
+int i, k, threads, pcount; 
+double t1, t2; 
+int found; 
+/* Set number of threads equal to argv[1] if present */ 
+if (argc > 1) 
+{ 
+threads = atoi(argv[1]); 
+if (omp_get_dynamic()) 
+{ 
+omp_set_dynamic(0); 
+printf("called omp_set_dynamic(0)\n"); 
+} 
+omp_set_num_threads(threads); 
+} 
+printf("%d threads max\n",omp_get_max_threads()); 
+a = (int *) malloc((N+1) * sizeof(int)); 
+// 1. create a list of natural numbers 2, 3, 4, ... none of which is marked. 
+for (i=2;i<=N;i++) a[i] = 1; 
+// 2. Set k = 2, the first unmarked number on the list. 
+k = 2; 
+t1 = omp_get_wtime(); 
+// 3. Repeat 
+#pragma omp parallel firstprivate(k) private(i,found) 
+while (k*k <= N) 
+{ 
+// a. Mark all multiples of k between k^2 and N 
+#pragma omp for 
+for (i=k*k; i<=N; i+=k) a[i] = 0; 
+// b. Find the smallest number greater than k that is unmarked 
+// and set k to this new value until k^2 > N 
+found = FALSE; 
+for (i=k+1;!found;i++) 
+{ 
+if (a[i]){ k = i; found = TRUE; } 
+} 
+} 
+t2 = omp_get_wtime(); 
+printf("%.2f seconds\n",t2-t1); 
+// 4. The unmarked numbers are primes 
+pcount = 0; 
+for (i=2;i<=N;i++) 
+{ 
+if( a[i] ) 
+{ 
+pcount++; 
+//printf("%d\n",i); 
+} 
+} 
+printf("%d primes between 0 and %d\n",pcount,N); 
+}
+
+9
+#include <stdio.h> 
+#include <malloc.h> 
+#include <omp.h> 
+long long factorial(long n) 
+{ 
+long long i,out; 
+out = 1; 
+for (i=1; i<n+1; i++) out *= i; 
+return(out); 
+} 
+int main(int argc, char **argv) 
+{ 
+int i,j,threads; 
+long long *x; 
+long long n=12; 
+/* Set number of threads equal to argv[1] if present */ 
+if (argc > 1) 
+{ 
+threads = atoi(argv[1]); 
+if (omp_get_dynamic()) 
+{ 
+omp_set_dynamic(0); 
+printf("called omp_set_dynamic(0)\n"); 
+} 
+omp_set_num_threads(threads); 
+} 
+printf("%d threads\n",omp_get_max_threads()); 
+x = (long long *) malloc(n * sizeof(long)); 
+for (i=0;i<n;i++) x[i]=factorial(i); 
+j=0; 
+/* Is the output the same if the following line is commented out? */ 
+#pragma omp parallel for firstprivate(x,j) 
+for (i=1; i<n; i++) 
+{ 
+j += i; 
+x[i] = j*x[i-1]; 
+} 
+for (i=0; i<n; i++) 
+printf("factorial(%2d)=%14lld x[%2d]=%14lld\n",i,factorial(i),i,x[i]); 
+return 0; 
+}
+
+7
+#include <omp.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#define NRA 62 
+#define NCA 15 
+#define NCB 7 
+int main (int argc, char *argv[]) 
+{ 
+int 
+tid, nthreads, i, j, k, chunk; 
+double a[NRA][NCA], 
+/* matrix A to be multiplied */ 
+b[NCA][NCB], 
+/* matrix B to be multiplied */ 
+c[NRA][NCB]; 
+/* result matrix C */ 
+/* number of rows in matrix A */ 
+/* number of columns in matrix A */ 
+/* number of columns in matrix B */ 
+chunk = 10; 
+/*** Spawn a parallel region explicitly scoping all variables ***/ 
+#pragma omp parallel shared(a,b,c,nthreads,chunk) private(tid,i,j,k) 
+{ 
+tid = omp_get_thread_num(); 
+if (tid == 0) 
+{ 
+nthreads = omp_get_num_threads(); 
+printf("Starting matrix multiple example with %d threads\n",nthreads); 
+printf("Initializing matrices...\n"); 
+} 
+/*** Initialize matrices ***/ 
+#pragma omp for schedule (static, chunk) 
+for (i=0; i<NRA; i++) 
+for (j=0; j<NCA; j++) 
+a[i][j]= i+j; 
+#pragma omp for schedule (static, chunk) 
+for (i=0; i<NCA; i++) 
+for (j=0; j<NCB; j++) 
+b[i][j]= i*j; 
+#pragma omp for schedule (static, chunk) 
+for (i=0; i<NRA; i++) 
+for (j=0; j<NCB; j++) 
+c[i][j]= 0; 
+/*** Do matrix multiply sharing iterations on outer loop ***/ 
+/*** Display who does which iterations for demonstration purposes ***/ 
+printf("Thread %d starting matrix multiply...\n",tid); 
+#pragma omp for schedule (static, chunk) 
+for (i=0; i<NRA; i++) 
+{ 
+printf("Thread=%d did row=%d\n",tid,i); 
+for(j=0; j<NCB; j++) 
+for (k=0; k<NCA; k++) 
+c[i][j] += a[i][k] * b[k][j]; 
+} 
+} /*** End of parallel region ***/ 
+/*** Print results ***/ 
+/* set loop iteration chunk size */ 
+printf("******************************************************\n"); 
+printf("Result Matrix:\n"); 
+for (i=0; i<NRA; i++) 
+{ 
+for (j=0; j<NCB; j++) 
+printf("%6.2f ", c[i][j]); 
+printf("\n"); 
+} 
+printf("******************************************************\n"); 
+printf ("Done.\n"); 
+}
+
+4
+#include <stdio.h> 
+#include <omp.h> 
+#define NUM_UNITS 2 
+#define NUM_INSTRUCTIONS 6 
+typedef struct { 
+char type;
+ int src1;
+      // 
+       //
+ 'A' for Add, 'M' for Multiply 
+ Source operand 1 
+int src2;
+ int dest;       
+} Instruction; 
+       //
+ Source operand 2 
+// Destination register 
+typedef struct { 
+char type;
+ int op1;
+      // 
+        / /
+ 'A' for Add, 'M' for Multiply 
+ Operand 1 
+int op2;
+ int result;
+ int status;     
+        / /
+     //
+ Operand 2 
+ Result of operation 
+// 0 if ready, 1 if executing 
+} FunctionalUnit; 
+Instruction instructions[NUM_INSTRUCTIONS] = { 
+{'A', 2, 3, 1}, // Add R1 = R2 + R3 
+{'M', 4, 5, 2}, // Multiply R2 = R4 * R5 
+{'A', 1, 2, 3}, // Add R3 = R1 + R2 
+{'M', 3, 3, 4}, // Multiply R4 = R3 * R3 
+{'A', 5, 4, 5}, // Add R5 = R5 + R4 
+{'M', 2, 2, 6}  // Multiply R6 = R2 * R2 
+}; 
+FunctionalUnit units[NUM_UNITS]; 
+void execute_instruction(int unit_id, Instruction inst) { 
+// Simulate execution delay 
+for (int i = 0; i < 100000000; ++i); // Delay loop (simulating execution time) 
+// Perform the operation based on instruction type 
+if (inst.type == 'A') { 
+units[unit_id].result = inst.src1 + inst.src2; 
+} else if (inst.type == 'M') { 
+units[unit_id].result = inst.src1 * inst.src2; 
+} 
+// Mark the unit as ready 
+units[unit_id].status = 0; 
+} 
+int main() { 
+// Initialize functional units 
+for (int i = 0; i < NUM_UNITS; ++i) { 
+units[i].status = 0; // Initialize all units as idle 
+} 
+// Dispatch instructions to functional units (simulating Tomasulo's algorithm) 
+#pragma omp parallel for num_threads(NUM_INSTRUCTIONS) 
+for (int i = 0; i < NUM_INSTRUCTIONS; ++i) { 
+// Find a free functional unit 
+int unit_id = -1; 
+#pragma omp critical 
+{ 
+} 
+for (int j = 0; j < NUM_UNITS; ++j) { 
+if (units[j].status == 0) { 
+unit_id = j; 
+units[j].status = 1; // Mark the unit as executing 
+break; 
+} 
+} 
+if (unit_id != -1) { 
+// Execute the instruction 
+execute_instruction(unit_id, instructions[i]); 
+printf("Executed instruction %d: Result = %d\n", i + 1, units[unit_id].result); 
+} else { 
+printf("No free functional unit available for instruction %d\n", i + 1); 
+} 
+} 
+return 0; 
+} 
