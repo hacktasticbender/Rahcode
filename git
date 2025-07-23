@@ -1,0 +1,132 @@
+import React, { useState } from 'react';
+
+const ImageUploader = () => {
+    const [image, setImage] = useState(null);
+    const [convertToGrayscale, setConvertToGrayscale] = useState(false);
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleCheckboxChange = () => {
+        setConvertToGrayscale(!convertToGrayscale);
+    };
+
+    return (
+        <div>
+            <h1>Upload Image</h1>
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <label>
+                <input
+                    type="checkbox"
+                    checked={convertToGrayscale}
+                    onChange={handleCheckboxChange}
+                />
+                Convert to Grayscale
+            </label>
+            {image && <img src={image} alt="Uploaded" style={{ maxWidth: '100%' }} />}
+        </div>
+    );
+};
+
+export default ImageUploader;
+
+
+
+
+
+const convertToGrayscale = (imageData) => {
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+        data[i] = avg;     // R
+        data[i + 1] = avg; // G
+        data[i + 2] = avg; // B
+        // Alpha channel remains unchanged
+    }
+    return imageData;
+};
+
+const handleCheckboxChange = () => {
+    setConvertToGrayscale(!convertToGrayscale);
+    if (!convertToGrayscale) {
+        // Assuming we have the image drawn on the canvas
+        const canvas = document.getElementById('imageCanvas');
+        const context = canvas.getContext('2d');
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const grayImageData = convertToGrayscale(imageData);
+        context.putImageData(grayImageData, 0, 0);
+    }
+};
+
+
+
+const convertToGrayscale = (imageData) => {
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const avg = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+        data[i] = avg;     // R
+        data[i + 1] = avg; // G
+        data[i + 2] = avg; // B
+        // Alpha channel remains unchanged
+    }
+    return imageData;
+};
+
+const handleCheckboxChange = () => {
+    setConvertToGrayscale(!convertToGrayscale);
+    if (!convertToGrayscale) {
+        // Assuming we have the image drawn on the canvas
+        const canvas = document.getElementById('imageCanvas');
+        const context = canvas.getContext('2d');
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const grayImageData = convertToGrayscale(imageData);
+        context.putImageData(grayImageData, 0, 0);
+    }
+};
+
+
+import React, { useState } from 'react';
+import GrayscaleCheckbox from './GrayscaleCheckbox';
+
+const ImageProcessor = () => {
+    const [isGrayscale, setIsGrayscale] = useState(false);
+    const [image, setImage] = useState(null); // Assume this is the uploaded image
+
+    const handleToggle = () => {
+        setIsGrayscale(prev => !prev);
+    };
+
+    const processImage = (image) => {
+        let processedImage = image;
+        if (isGrayscale) {
+            processedImage = applyGrayscale(image); // Your grayscale function
+        }
+        // Apply smoothing or other effects here
+        return processedImage;
+    };
+
+    return (
+        <div>
+            <GrayscaleCheckbox isGrayscale={isGrayscale} onToggle={handleToggle} />
+            <img src={processImage(image)} alt="Processed" />
+        </div>
+    );
+};
+
+
+
+
+
+<select onChange={(e) => setNeighborhoodSize(Number(e.target.value))}>
+    <option value={3}>3x3</option>
+    <option value={5}>5x5</option>
+    <option value={7}>7x7</option>
+</select>
