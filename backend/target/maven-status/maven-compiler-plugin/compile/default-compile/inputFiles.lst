@@ -1,0 +1,11 @@
+/workspace/backend/src/main/java/com/example/ticketing/TicketingApplication.java
+/workspace/backend/src/main/java/com/example/ticketing/domain/Role.java
+/workspace/backend/src/main/java/com/example/ticketing/domain/User.java
+/workspace/backend/src/main/java/com/example/ticketing/repository/UserRepository.java
+/workspace/backend/src/main/java/com/example/ticketing/security/JwtAuthenticationFilter.java
+/workspace/backend/src/main/java/com/example/ticketing/security/JwtService.java
+/workspace/backend/src/main/java/com/example/ticketing/security/SecurityConfig.java
+/workspace/backend/src/main/java/com/example/ticketing/security/UserDetailsServiceImpl.java
+/workspace/backend/src/main/java/com/example/ticketing/web/AuthController.java
+/workspace/backend/src/main/java/com/example/ticketing/web/dto/LoginRequest.java
+/workspace/backend/src/main/java/com/example/ticketing/web/dto/RegisterRequest.java
