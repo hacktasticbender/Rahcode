@@ -16,3 +16,8 @@ spring:
     locations: classpath:db/migration
 server:
   port: 8080
+app:
+  jwt:
+    # Base64-encoded 256-bit secret (change in real deployments)
+    secret: c2VjdXJlLXNlY3JldC1zZWN1cmUtc2VjdXJlLXNlY3JldC1zZWN1cmU=
+    expirationMs: 86400000
