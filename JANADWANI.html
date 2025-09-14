@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>JANADWANI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family: Arial, Helvetica, sans-serif; margin:16px; background:#f7fafc; color:#102a43}
+    header{display:flex; align-items:center; gap:12px}
+    h1{margin:0; font-size:20px}
+    .card{background:#fff; padding:14px; border-radius:8px; box-shadow:0 2px 6px rgba(16,42,67,0.08); margin-bottom:12px;}
+    label{display:block; margin-top:8px; font-weight:600}
+    textarea{width:100%; min-height:80px; padding:8px; border-radius:6px; border:1px solid #dfe7ef; resize:vertical}
+    select,input[type=text]{width:100%; padding:8px; border-radius:6px; border:1px solid #dfe7ef}
+    button{background:#0066cc; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer; margin-top:8px}
+    button.secondary{background:#0b6d44}
+    .row{display:grid; grid-template-columns: 1fr 380px; gap:12px}
+    .small{font-size:12px; color:#3d5a80}
+    table{width:100%; border-collapse:collapse; margin-top:8px}
+    th,td{padding:8px; text-align:left; border-bottom:1px solid #eef4f8; font-size:13px}
+    .pill{display:inline-block; padding:4px 8px; border-radius:12px; font-size:12px}
+    .low{background:#e6f4ea; color:#0b6d44}
+    .med{background:#fff4e6; color:#99530f}
+    .high{background:#ffe6e6; color:#8a1f1f}
+    .dept{background:#eef6ff; color:#034078; padding:4px 8px; border-radius:8px; font-weight:600; font-size:12px}
+    .controls{display:flex; gap:8px; margin-top:8px}
+    footer{font-size:12px; color:#406280; margin-top:12px}
+    .chart-wrapper{height:220px}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="width:64px;height:64px;border-radius:10px;background:linear-gradient(135deg,#ffd166,#ef476f);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">MY</div>
+    <div>
+      <h1>JANADWANI</h1>
+      <div class="small">Simulated intake, simple NLP classification, assignment & dashboard</div>
+    </div>
+  </header>
+
+  <div class="row">
+    <div>
+      <div class="card">
+        <label for="channel">Channel</label>
+        <select id="channel">
+          <option>App (text)</option>
+          <option>WhatsApp</option>
+          <option>voice transcribed</option>
+          <option>SMS</option>
+        </select>
+
+        <label for="ward">Ward / Location</label>
+        <select id="ward">
+          <option value="Ward 1">Ward 1 - KR Circle</option>
+          <option value="Ward 2">Ward 2 - Kuvempu Nagar</option>
+          <option value="Ward 3">Ward 3 - Vivekananda Circle</option>
+          <option value="Ward 4">Ward 4 - Devaraja Market</option>
+          <option value="Ward 5">Ward 5 - Chamundi Road</option>
+          <option value="Ward 6">Ward 6 - Saraswathipuram</option>
+          <option value="Ward 7">Ward 7 - Jayalakshmipuram</option>
+          <option value="Ward 8">Ward 8 - Bogadi</option>
+          <option value="Ward 9">Ward 9 - Hebbal</option>
+          <option value="Ward 10">Ward 10 - Bannimantap</option>
+          <option value="Ward 11">Ward 11 - Vidyaranyapuram</option>
+          <option value="Ward 12">Ward 12 - Gokulam</option>
+          <option value="Ward 13">Ward 13 - Lakshmipuram</option>
+          <option value="Ward 14">Ward 14 - Nazarbad</option>
+          <option value="Ward 15">Ward 15 - Ashokapuram</option>
+          <option value="Ward 16">Ward 16 - Siddhartha Layout</option>
+          <option value="Ward 17">Ward 17 - Metagalli</option>
+          <option value="Ward 18">Ward 18 - Vivekananda Nagar</option>
+          <option value="Ward 19">Ward 19 - Nanjangud Road</option>
+          <option value="Ward 20">Ward 20 - Jayanagar</option>
+        </select>
+        
+        <label for="language">Complaint Language</label>
+        <select id="language">
+          <option value="English">English</option>
+          <option value="Kannada">Kannada</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Tamil">Tamil</option>
+        </select>
+
+        <label for="complaint">Complaint (write in Kannada/English/Hindi)</label>
+        <textarea id="complaint" placeholder="e.g., Streetlight not working near Vivekananda Circle for 2 days"></textarea>
+        <div style="margin-top:6px">
+          <button type="button" id="micBtn" title="Speak your complaint">🎙️ Speak</button>
+        </div>
+
+
+        <label for="photo">(Optional) Attach photo URL</label>
+        <input type="text" id="photo" placeholder="Paste image URL (optional)">
+
+        <div class="controls">
+          <button id="submit">Submit Complaint</button>
+          <button id="simulate" class="secondary">Simulate Auto-Detect (CCTV)</button>
+        </div>
+
+        <div id="result" class="small" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;margin-bottom:6px">Complaint Log</h3>
+        <div class="small">List of complaints registered in the prototype. Click "Resolve" to mark done.</div>
+        <table id="log">
+          <thead><tr><th>ID</th><th>Ward</th><th>Issue</th><th>Dept</th><th>Urgency</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3 style="margin-top:0">Auto-classification Preview</h3>
+        <div id="preview" class="small">Type a complaint and click Submit to see AI analysis here.</div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Ward Heatmap (counts)</h3>
+        <div class="chart-wrapper">
+          <canvas id="wardChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Officer Dashboard Snapshot</h3>
+        <div class="small">
+          <ul>
+            <li><strong>Sanitation Officer - Ward 1:</strong> 2 open tasks</li>
+            <li><strong>Electricity Officer - Ward 3:</strong> 1 open task</li>
+            <li><strong>Water Officer - Ward 2:</strong> 1 open task</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Prototype Controls</h3>
+        <div class="small">
+          <button id="escalate">Simulate Escalation for Overdue</button>
+          <button id="export">Export Log (JSON)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="small">Prototype created for Ideathon: MyMysuru Vision 2030. This is a demo — AI is simulated by simple keyword matching for the prototype.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Simple prototype logic using rule-based "NLP"
+let complaints = [];
+let nextId = 1;
+const wards = ["Ward 1","Ward 2","Ward 3","Ward 4","Ward 5","Ward 6","Ward 7","Ward 8","Ward 9","Ward 10","Ward 11","Ward 12","Ward 13","Ward 14","Ward 15","Ward 16","Ward 17","Ward 18","Ward 19","Ward 20"];
+const deptOfficers = {
+  "Sanitation": { officer: "Sanitation Officer", slaHours: 24 },
+  "Electricity": { officer: "Electricity Officer", slaHours: 24 },
+  "Water": { officer: "Water Officer", slaHours: 24 },
+  "Public Works": { officer: "Public Works Officer", slaHours: 48 },
+  "Heritage": { officer: "Heritage Officer", slaHours: 72 },
+  "General": { officer: "General Duty Officer", slaHours: 72 }
+};
+
+function analyze(text) {
+  const t = text.toLowerCase();
+  let dept = "General";
+  if (t.match(/garbage|trash|waste|bin|overflow|ಕಸ|ತ್ಯಾಜ್ಯ|ಕಸದ ತೊಟ್ಟಿ|ಗಲೀಜು/)) dept = "Sanitation";
+  else if (t.match(/streetlight|light|lamp|ಬೀದಿ ದೀಪ|ದೀಪ|ಲೈಟ್/)) dept = "Electricity";
+  else if (t.match(/water|leak|pipeline|cauvery|tap|ನೀರು|ಸೋರಿಕೆ|ಪೈಪ್‌ಲೈನ್/)) dept = "Water";
+  else if (t.match(/pothole|road|asphalt|sinkhole|ಗುಂಡಿ|ರಸ್ತೆ|ಸಿಂಕ್ ಹೋಲ್/)) dept = "Public Works";
+  else if (t.match(/palace|heritage|historic|monument|temple|wodeyar|ಅರಮನೆ|ಪಾರಂಪರಿಕ|ಸ್ಮಾರಕ/)) dept = "Heritage";
+
+  let urgency = "Low";
+  if (t.match(/hospital|danger|accident|major|urgent|burst|flood|ಆಸ್ಪತ್ರೆ|ಅಪಾಯ|ಅಪಘಾತ|ಪ್ರಮುಖ|ತುರ್ತು|ಸ್ಫೋಟ|ಪ್ರವಾಹ/)) urgency = "High";
+  else if (t.match(/overflow|stagnant|blocked|leak|ತುಂಬಿ ಹರಿಯುತ್ತಿದೆ|ನಿಂತ ನೀರು|ತಡೆ|ಸೋರಿಕೆ/)) urgency = "Medium";
+
+  // extract potential location mention (very simple)
+  let ward = document.getElementById('ward').value || wards[Math.floor(Math.random()*wards.length)];
+
+  return { department: dept, urgency, ward };
+}
+
+function renderLog() {
+  const tbody = document.querySelector('#log tbody');
+  tbody.innerHTML = '';
+  complaints.forEach(c => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${c.id}</td>
+      <td>${c.ward}</td>
+      <td>${escapeHtml(c.text)}</td>
+      <td><span class="dept">${c.department}</span></td>
+      <td><span class="pill ${c.urgency==='High'?'high':c.urgency==='Medium'?'med':'low'}">${c.urgency}</span></td>
+      <td>${c.status}${c.escalated? ' (Escalated)': ''}</td>
+      <td>
+        ${c.status === 'Open' ? `<button onclick="markResolved(${c.id})">Resolve</button>` : ''}
+        <button onclick="viewDetails(${c.id})">View</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateChart();
+}
+
+function markResolved(id) {
+  const item = complaints.find(c => c.id===id);
+  if (item) {
+    item.status = 'Resolved';
+    item.resolvedAt = new Date().toISOString();
+    renderLog();
+  }
+}
+
+function viewDetails(id) {
+  const c = complaints.find(x => x.id===id);
+  if (!c) return alert('Not found');
+  alert(`ID: ${c.id}\nWard: ${c.ward}\nIssue: ${c.text}\nDept: ${c.department}\nUrgency: ${c.urgency}\nAssigned to: ${deptOfficers[c.department].officer}\nStatus: ${c.status}`);
+}
+
+document.getElementById('submit').addEventListener('click', ()=>{
+  const text = document.getElementById('complaint').value.trim();
+  if (!text) return alert('Please write the complaint text');
+  const analysis = analyze(text);
+  const id = nextId++;
+  const now = new Date();
+  const slaHours = deptOfficers[analysis.department].slaHours;
+  const due = new Date(now.getTime() + slaHours*60*60*1000).toISOString();
+  const item = {
+    id, text, department: analysis.department, urgency: analysis.urgency, ward: analysis.ward,
+    channel: document.getElementById('channel').value, photo: document.getElementById('photo').value || null,
+    status: 'Open', createdAt: now.toISOString(), dueAt: due, escalated: false
+  };
+  complaints.push(item);
+  document.getElementById('result').innerText = `Assigned to ${deptOfficers[item.department].officer} • SLA: ${slaHours} hrs`;
+  document.getElementById('preview').innerHTML = `<strong>Detected:</strong> Dept: ${item.department} | Urgency: ${item.urgency} | Ward: ${item.ward}`;
+  document.getElementById('complaint').value = '';
+  renderLog();
+});
+
+document.getElementById('simulate').addEventListener('click', ()=>{
+  // Simulate CCTV auto-detect creating a complaint
+  const samples = [
+    {t:'Overflowing garbage near KR Circle', w:'Ward 1'},
+    {t:'Pothole on Chamundi Road causing hazard', w:'Ward 5'},
+    {t:'Water pipe burst near Kuvempu Nagar', w:'Ward 2'}
+  ];
+  const s = samples[Math.floor(Math.random()*samples.length)];
+  document.getElementById('complaint').value = s.t;
+  document.getElementById('ward').value = s.w;
+  document.getElementById('channel').value = 'Auto-Detect (CCTV)';
+});
+
+// Simple escalation: mark open complaints past due as escalated
+document.getElementById('escalate').addEventListener('click', ()=>{
+  const now = new Date();
+  let count = 0;
+  complaints.forEach(c => {
+    if (c.status === 'Open' && new Date(c.dueAt) < now) {
+      c.escalated = true;
+      c.status = 'Open'; // still open but escalated flag set
+      count++;
+    }
+  });
+  alert('Escalation processed for '+count+' overdue complaints (simulated).');
+  renderLog();
+});
+
+document.getElementById('export').addEventListener('click', ()=>{
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(complaints, null, 2));
+  const dl = document.createElement('a');
+  dl.setAttribute('href', dataStr);
+  dl.setAttribute('download', 'complaints_log.json');
+  dl.click();
+});
+
+function escapeHtml(text){ return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Chart
+
+// Chart.js plugin for showing values
+const valuePlugin = {
+  id: 'valuePlugin',
+  afterDatasetsDraw(chart, args, options) {
+    const {ctx, data, scales: {x,y}} = chart;
+    ctx.save();
+    ctx.font = '10px Arial';
+    ctx.fillStyle = '#000';
+    data.datasets[0].data.forEach((val, i) => {
+      const xPos = x.getPixelForValue(i);
+      const yPos = y.getPixelForValue(val);
+      ctx.fillText(val, xPos-5, y.bottom + 12); // draw below x axis
+    });
+  }
+};
+
+const ctx = document.getElementById('wardChart').getContext('2d');
+let wardChart = new Chart(ctx, { plugins:[valuePlugin],
+  type: 'bar',
+  data: {
+    labels: wards,
+    datasets: [{label:'Open Complaints', data:[0,0,0,0,0], backgroundColor: 'rgba(6,79,184,0.8)'}]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    scales:{ y: { beginAtZero:true, precision:0 } }
+  }
+});
+
+
+function updateChart(){
+  const counts = wards.map(w => complaints.filter(c => c.ward===w && c.status==='Open').length);
+  // Also separate urgency counts
+  const lowCounts = wards.map(w => complaints.filter(c => c.ward===w && c.status==='Open' && c.urgency==='Low').length);
+  const medCounts = wards.map(w => complaints.filter(c => c.ward===w && c.status==='Open' && c.urgency==='Medium').length);
+  const highCounts = wards.map(w => complaints.filter(c => c.ward===w && c.status==='Open' && c.urgency==='High').length);
+
+  wardChart.data.datasets = [
+    {label:'Low', data:lowCounts, backgroundColor:'rgba(0,200,83,0.8)'},
+    {label:'Medium', data:medCounts, backgroundColor:'rgba(255,160,0,0.8)'},
+    {label:'High', data:highCounts, backgroundColor:'rgba(229,57,53,0.8)'}
+  ];
+  wardChart.update();
+}
+
+// initial render
+renderLog();
+
+
+
+// 
+// Multilingual voice recognition (respect language dropdown; fallback codes and non-blocking UI)
+function startRecognitionFromSelection() {
+  if (!('webkitSpeechRecognition' in window)) {
+    document.getElementById('result').innerText = "Speech recognition not supported in this browser.";
+    return;
+  }
+  const complaintLang = document.getElementById('language').value;
+  let langs = [];
+  switch (complaintLang) {
+    case 'Kannada': langs = ['kn-IN','kn']; break;
+    case 'Hindi': langs = ['hi-IN','hi']; break;
+    case 'Tamil': langs = ['ta-IN','ta']; break;
+    case 'English': langs = ['en-IN','en-US','en']; break;
+    default: langs = ['kn-IN','hi-IN','hi','en-IN','en-US','en']; break;
+  }
+
+  const resultEl = document.getElementById('result');
+  const micBtn = document.getElementById('micBtn');
+  micBtn.disabled = true;
+  const prevText = micBtn.innerText;
+  micBtn.innerText = 'Listening…';
+  resultEl.innerText = 'Listening...';
+
+  let current = 0;
+  function tryNext() {
+    if (current >= langs.length) {
+      resultEl.innerText = 'Could not recognize speech in selected languages.';
+      micBtn.disabled = false;
+      micBtn.innerText = prevText;
+      return;
+    }
+    const lang = langs[current];
+    const recog = new webkitSpeechRecognition();
+    recog.lang = lang;
+    recog.interimResults = false;
+    recog.continuous = false;
+    let got = false;
+
+    recog.onstart = function() {
+      resultEl.innerText = 'Listening (' + lang + ')...';
+    };
+    recog.onresult = function(event) {
+      got = true;
+      const transcript = event.results[0][0].transcript;
+      document.getElementById('complaint').value = transcript;
+      resultEl.innerText = 'Recognized (' + lang + '): ' + transcript;
+      micBtn.disabled = false;
+      micBtn.innerText = prevText;
+    };
+    recog.onnomatch = function() {
+      if (!got) {
+        current++;
+        tryNext();
+      }
+    };
+    recog.onerror = function(e) {
+      if (!got) {
+        current++;
+        tryNext();
+      }
+    };
+    recog.onend = function() {
+      if (!got) {
+        current++;
+        tryNext();
+      }
+    };
+
+    try {
+      recog.start();
+    } catch (e) {
+      current++;
+      tryNext();
+      return;
+    }
+
+    setTimeout(function() {
+      if (!got) {
+        try { recog.stop(); } catch(e){}
+      }
+    }, 7000);
+  }
+
+  tryNext();
+}
+
+// wire the mic button to the new function
+document.getElementById('micBtn').addEventListener('click', startRecognitionFromSelection);
+
+
+
+</script>
+</body>
+</html>
